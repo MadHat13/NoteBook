@@ -23,6 +23,7 @@
     "@vue/eslint-config-typescript": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "jquery": "^3.4.1",
     "sass": "^1.19.0",
     "sass-loader": "^8.0.0",
     "typescript": "~3.5.3",
@@ -35,7 +36,6 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended",
       "@vue/typescript"
     ],
     "rules": {},
