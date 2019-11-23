@@ -33,7 +33,6 @@ export default {
           alert("发生未知错误");
         }
       });
-      alert("aaa");
     }
   }
 };
