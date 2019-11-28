@@ -3,6 +3,7 @@
     <router-view></router-view>
     <img alt="Vue logo" src="./assets/logo.png">
     <router-link to="/"></router-link>
+    <router-link to="/register">reg</router-link>
   </div>
 </template>
 

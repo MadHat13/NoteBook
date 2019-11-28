@@ -4,14 +4,20 @@
     <input type="text" id="nickname" max="200" min="1" required="required" name="nickname" />
     <br />密码
     <input type="text" id="password" required="required" name="password" />
+    <br />确认密码
+    <input
+      type="text"
+      id="password_check"
+      required="required"
+      name="password_check"
+      @blur="check()"
+    />
     <button type="submit" @click="test()">提交</button>
   </div>
 </template>
 
 <script>
-import {} from "../assets/js/Login";
-import $ from "jquery";
-
+import $ from 'jquery';
 export default {
   methods: {
     test() {
@@ -29,27 +35,23 @@ export default {
           alert(
             "前端请求后端成功，返回了数据,数据显示用户名为" + data.nickname
           );
-          var exp = new Date();
-          exp.setTime(exp.getTime() + 60 * 60 * 1000);
-          document.cookie =
-            "nickname = " +
-            data.nickname +
-            ";password = " +
-            data.password +
-            ";path=/";
+          console.log(cookie);
         },
         error: function(e) {
           alert("发生未知错误");
         }
       });
-    }
-  },
-  beforeCreate() {
-    if (document.cookie.length > 0) {
-      let cookie1 = document.cookie;
-      let pos = cookie1.indexOf("=");
-      let nickname = cookie1.slice(pos + 1);
-      console.log(nickname);
+    },
+    check() {
+      const password = document.getElementById("password");
+      const password_check = document.getElementById("password_check");
+      if (password.value != password_check.value) {
+          if($('#r1').html()!="两次密码不同"){
+              $('#password_check').after("<span id='r1'>两次密码不同</span>");
+          }
+      } else {
+        $('#r1').remove();
+      }
     }
   }
 };
