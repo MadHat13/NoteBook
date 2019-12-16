@@ -12,11 +12,11 @@
                 <li :class="{'catalogue-li':true,'catalogue-li-click':catalogue_ul[0].isClick}" @click="turnBlue(catalogue_ul[0].id),newdata()" >{{catalogue_ul[0].text}}</li>
                 <li :class="{'catalogue-li':true,'catalogue-li-click':catalogue_ul[1].isClick}" @click="turnBlue(catalogue_ul[1].id)" >{{catalogue_ul[1].text}}</li>
                 <ul v-if="catalogue_ul[1].isClick" id="titlelist">
-                  <li v-for="title in content" :key="title.dataid" :v-if="title.ifdelete=='1' " @click="showcontent(title.dataid,title)">{{title.ifdelete}}{{title.title}}</li>
+                  <li v-for="title in content" :key="title.dataid" :v-if="title.ifdelete=='1' " @click="showcontent(title.dataid)">{{title.ifdelete}}{{title.title}}</li>
                 </ul>
                 <li :class="{'catalogue-li':true,'catalogue-li-click':catalogue_ul[2].isClick}" @click="turnBlue(catalogue_ul[2].id)" >{{catalogue_ul[2].text}}</li>
                 <ul v-if="catalogue_ul[2].isClick" id="titlelist">
-                  <li v-for="title in content" :key="title.dataid" :v-if="title.ifdelete=='0' " @click="showcontent(title.dataid,title)">{{title.ifdelete}}{{title.title}}</li>
+                  <li v-for="title in content" :key="title.dataid" :v-if="title.ifdelete=='0' " @click="showcontent(title.dataid)">{{title.ifdelete}}{{title.title}}</li>
                 </ul>
             </ul>
             </div>
@@ -133,8 +133,7 @@ export default {
       }
       
     },
-    showcontent($data_id,$delete){
-      console.log($delete);
+    showcontent($data_id){
       for(var i = 0;i<this.content.length;i++){ 
         if(this.content[i].dataid==$data_id){
           $("#content-title")[0].value = this.content[i].title;
