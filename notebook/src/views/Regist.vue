@@ -1,67 +1,74 @@
 <template>
   <div>
     <div class="box">
-      <h1>LOGIN</h1>
+      <h1>REGIST</h1>
       <input type="text" id="nickname" name="nickname" placeholder="Username"> <br/>
       <input type="password" id="password" name="password"  placeholder="password" ><br/>
+      <input type="password" id="password_check" name="password_check"  placeholder="password_check"><br/>
       <input type="submit" class="sub" name="submit" value="Login" @click="test()">
 	  </div>
+
   </div>
 </template>
 
 <script>
-import $ from "jquery";
-import router from '../router';
+import $ from 'jquery';
 export default {
+  components:{},
+  data(){
+    return {
+        isClear: false,
+        detail:""
+        }
+      } ,
   methods: {
     test() {
       const nickname = document.getElementById("nickname");
       const password = document.getElementById("password");
+      const password_check = document.getElementById("password_check");
       if(nickname.value==""){
         alert("用户名不能为空");
         return;
       }else if(password.value==""){
         alert("密码不能为空");
         return;
+      }else if(password_check.value==""){
+        alert("请再次输入密码");
+        return;
+      }
+      if (password.value != password_check.value) {
+          alert("两次密码不一致");
+          password_check.value = "";
+          password.value = "";
+          return;
       }
       const jsondata = {
         nickname: nickname.value,
-        password: password.value
+        password: password.value,
       };
       var beforethis = this;
       $.ajax({
         type: "post",
-        url: "http://localhost:8080/NoteBook/login",
+        url: "http://localhost:8080/NoteBook/register",
         data: jsondata,
-        crossDomain:true, //设置跨域为true
-        xhrFields: {
-          withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
-        },
         success: function(data) {
-          if(data.msg=="false"){
-            alert("登录失败");
-            return;
-          }else{
-            var date = new Date();
-            document.cookie = "nickname = " + nickname.value +";expires="+date.toGMTString;
-            beforethis.$router.push('index');
-          }
+            if(data.msg=="false"){
+                alert("注册失败");
+                return;
+            }else{
+                alert("注册成功");
+                var date = new Date();
+                document.cookie = "nickname = " + nickname.value +";expires="+date.toGMTString;
+                beforethis.$router.push('login');
+            }
         },
         error: function(e) {
           alert("发生未知错误");
         }
       });
     },
+    
   },
-  mounted() {
-    if (document.cookie.length > 0) {
-      let cookie1 = document.cookie;
-      let pos = cookie1.indexOf("=");
-      let nickname = cookie1.slice(pos + 1);
-      const name = document.getElementById("nickname");
-      name.value = nickname;
-    }
-  }
 };
 </script>
 
@@ -87,7 +94,7 @@ body {
 	padding: 10px;
 	margin: auto;
 }
-#nickname , #password {
+#nickname , #password ,#password_check{
 	background: none;
 	display: block;
 	text-align: center;

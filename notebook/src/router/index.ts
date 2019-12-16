@@ -1,19 +1,30 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Login from '../views/Login.vue';
-import Register from '../views/register.vue'
+import Index from "../views/Index.vue";
+import Regist from "../views/Regist.vue";
+import test from "../views/test.vue";
+
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'login',
     component: Login,
   },{
-    path: '/register',
-    name: 'register',
-    component: Register,
+    path: '/regist',
+    name: 'regist',
+    component: Regist,
+  },{
+    path: '/index',
+    name: 'index',
+    component: Index,
+  },{
+    path: '/test',
+    name: 'test',
+    component: test,
   }
 ];
 
