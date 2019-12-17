@@ -113,7 +113,7 @@ body {
 	transition: 0.25s;
 	cursor: pointer;
 }
-.user:hover,.pwd:hover{
+#nickname:hover,#password:hover{
 	width: 280px;
 	border-color: green;
 }
