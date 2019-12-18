@@ -72,6 +72,7 @@ body {
 	font-family:sans-serif;
 	background-color: #34495e;
 	background-position: center;
+  background-image: url("../assets/blue-snow.png");
 }
 .box{
 	width: 300px;

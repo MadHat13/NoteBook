@@ -41,6 +41,7 @@
                     <input type="button" value="新建标签">
                     <input type="button" value="删除" id="content-tag-save" @click="delate">
                     <input type="button" value="保存" id="content-tag-save" @click="save">
+                    <input type="button" value="恢复" id="content-tag-save" @click="renew" v-if="isdelete">
                 </div>
                 <!-- <wangEditor v-model="detail" :isClear="isClear" id="content-editor"></wangEditor> -->
                 <textarea id="content-editor" rows="3" cols="20"></textarea>
@@ -89,6 +90,7 @@ export default {
       showTag:[],
       isTag: false,
       isClear: false,
+      isdelete:false,
       detail: "",
       body_attribute: {
         width: "",
@@ -114,6 +116,18 @@ export default {
     };
   },
   methods: {
+    ifdelete(){
+      var data_id = $("#data-id")[0].value;
+      for(var i = 0;i<this.content.length;i++){ 
+        if(this.content[i].dataid == data_id){
+          if(this.content[i].ifdelete == "0"){
+            this.isdelete = true;
+          }else if(this.content[i].ifdelete == "1"){
+            this.isdelete = false;
+          }
+        }
+      }
+    },
     getHeight() {
       this.body_attribute.height = window.innerHeight/50-0.15 + "rem";
       this.body_attribute.width = window.innerWidth/50 -0.15+ "rem";
@@ -144,6 +158,15 @@ export default {
       }
       return false;
     },
+    del(){
+      var data_id = $("#data-id")[0].value;
+      for(var i = 0;i<this.trash_content.length;i++){ 
+        if(this.trash_content[i].dataid==data_id){
+          return true;
+        }
+      }
+      return false;
+    },
     showcontent($data_id){
       for(var i = 0;i<this.content.length;i++){ 
         if(this.content[i].dataid==$data_id){
@@ -161,15 +184,10 @@ export default {
             pos1=pos2+1;
             tid++;
           }
-
-          // var E = window.wangEditor;
-          // var editor = new E('#content-editor')
-          // editor.create();
-          // editor.txt.append(this.content[i].contant) ;
-          //差一个标签遍历赋值
           break;
         }
       }
+      this.ifdelete();
     },
     search(){
       var search_text = $("#searchbox-search-input")[0].value;
@@ -213,12 +231,11 @@ export default {
     },
     delate(){
         let dataid = $("#data-id")[0].value;
-        console.log(dataid);
         const jsondata = {
             data_id:dataid,
         }
         let beforethis = this;
-        if(id()){
+        if(!this.del()){
           $.ajax({
             type: "post",
             url: "http://localhost:8080/NoteBook/delete",
@@ -228,13 +245,7 @@ export default {
               withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
             },
             success: function(data) {
-              for(let i = 0 ;i < beforethis.content.length;i++){
-                if(beforethis.content[i].data_id == dataid){
-                  console.log("qqq");
-                  beforethis.content[i].ifdelete = 0;
-                  return;
-                }
-              }
+              beforethis.getUserdata();
             },
             error: function(e) {
                 alert("发生未知错误");
@@ -251,7 +262,7 @@ export default {
               withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
             },
             success: function(data) {
-              getUserdata();
+              beforethis.getUserdata();
             },
             error: function(e) {
               alert("发生未知错误");
@@ -262,7 +273,6 @@ export default {
     },
     save(){
       let title = $("#content-title")[0].value;
-      console.log(title);
       let tag_list = this.showTag;
       let content = $("#content-editor")[0].value;
       let tag = "";
@@ -283,7 +293,6 @@ export default {
         taglist:tag,
         Content:content,
       }
-      console.log(jsondata.Title);
       let beforethis = this;
       
       if(this.id()){
@@ -328,6 +337,28 @@ export default {
       }
       
     },
+    renew(){
+      let data_id = $("#data-id")[0].value;
+      const jsondata = {
+        data_id:data_id,
+      }
+      let beforethis = this;
+      $.ajax({
+        type: "post",
+        url: "http://localhost:8080/NoteBook/renew",
+        data: jsondata,
+        crossDomain:true, //设置跨域为true
+        xhrFields: {
+          withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
+        },
+        success: function(data) {
+          beforethis.getUserdata();
+        },
+        error: function(e) {
+            alert("发生未知错误");
+        }
+      });
+    },
     logout(){
       var exp = new Date();
       exp.setDate(exp.getDate()-1);
@@ -351,23 +382,19 @@ export default {
             withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
           },
           success: function(data) {
-            //保存该用户data
-            // for(let i = 0 ;i<data.length;i++){
-            //   nextthis.content.push(data[i]);
-            // }
-            // nextthis.content = data;
             var x = data.data;
             console.log(x);
             nextthis.content = [];
+            nextthis.my_content = [];
+            nextthis.trash_content = [];
             for(let i = 0 ;i<x.length;i++){
               nextthis.content.push(x[i]);
               if(x[i].ifdelete == 1){
                 nextthis.my_content.push(x[i]);
               }else{
                 nextthis.trash_content.push(x[i]);
-              }
             }
-            console.log(x);
+          }
           },
           error: function(e) {
             alert("发生未知错误");
@@ -438,11 +465,6 @@ export default {
           withCredentials: true //默认情况下，标准的跨域请求是不会发送cookie的
         },
         success: function(data) {
-          //保存该用户data
-          // for(let i = 0 ;i<data.length;i++){
-          //   nextthis.content.push(data[i]);
-          // }
-          // nextthis.content = data;
           var x = data.data;
           for(let i = 0 ;i<x.length;i++){
             nextthis.content.push(x[i]);
