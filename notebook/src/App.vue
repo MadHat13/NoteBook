@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <router-view></router-view>
-    <router-link to="/"></router-link>
+    <router-link to="/login"></router-link>
     
   </div>
 </template>
@@ -23,10 +23,6 @@ body {
     color: #666666;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 16px;
-    padding: 0;
-    
-}
-.main{
-  
+    padding: 0;   
 }
 </style>

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Login from '../views/Login.vue';
 import Index from "../views/Index.vue";
 import Regist from "../views/Regist.vue";
+import Test from "../views/test.vue";
 
 Vue.use(VueRouter);
 
@@ -19,6 +20,10 @@ const routes = [
     path: '/index',
     name: 'index',
     component: Index,
+  },{
+    path: '/test',
+    name: 'test',
+    component: Test,
   },
 ];
 

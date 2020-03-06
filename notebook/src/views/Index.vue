@@ -38,7 +38,9 @@
                     <ul>
                         <li v-for="tag in showTag" :key="tag.id" class="content-tag-li"><input type="checkbox" name="tag" class="content-tag-input" :value="tag.text" checked>{{tag.text}}</li>
                     </ul>
-                    <input type="button" value="新建标签">
+                    <input type="text" value="" id="content-tag-newtagtxt">
+                    <input type="button" value="提交" id="content-tag-newtag-save" @click="newtagsave">
+                    <input type="button" value="新建标签" id="content-tag-newtag" @click="newtag">
                     <input type="button" value="删除" id="content-tag-save" @click="delate">
                     <input type="button" value="保存" id="content-tag-save" @click="save">
                     <input type="button" value="恢复" id="content-tag-save" @click="renew" v-if="isdelete">
@@ -191,12 +193,13 @@ export default {
     },
     search(){
       var search_text = $("#searchbox-search-input")[0].value;
+      search_text = search_text.toLowerCase();
       this.search_content = [];
       if(search_text==""){
         return;
       }
       for(var i = 0;i<this.my_content.length;i++){ 
-        if(this.my_content[i].title.includes(search_text)){
+        if(this.my_content[i].title.toLowerCase().includes(search_text)){
           this.search_content.push(this.my_content[i]);
         }
       }
@@ -364,6 +367,55 @@ export default {
       exp.setDate(exp.getDate()-1);
       document.cookie ="nickname = \"\" ; expires = "+exp.toGMTString();
       this.$router.push('/login');
+    },
+    newtag(){
+      document.getElementById("content-tag-newtagtxt").style.display = "inline";
+      document.getElementById("content-tag-newtag-save").style.display = "inline";
+    },
+    newtagsave(){
+      var txt = document.getElementById("content-tag-newtagtxt");
+      var btn = document.getElementById("content-tag-newtag-save");
+      txt.style.display = "none";
+      btn.style.display = "none";
+      if(txt.value == ""){
+        console.log("输入为空");
+        return;
+      }
+      var tagtxt = {
+        id:this.showTag.length+1,
+        text:txt.value
+      }
+      if($("#data-id").value == null){
+        //单独做一个接口 完成默认标签的增加
+        let defaulttag = this.User.tag_list;
+        defaulttag.push(tagtxt);
+        let jsontag = "";
+        for(var i = 0;i<defaulttag.length;i++){
+          jsontag+=defaulttag[i].text+"_";
+        };
+        const jsondata = {
+          tag:jsontag,
+        };
+        $.ajax({
+          type: "post",
+          url: "http://localhost:8080/NoteBook/SaveDefaultTag",
+          data: jsondata,
+          crossDomain: true,
+          xhrFields:{
+            withCredentials:true
+          },
+          success:function(){
+
+          },
+          error:function(e){
+            alert("发生未知错误");
+          }
+        })
+        return;
+      }
+      let tag_list = this.showTag;
+      tag_list.push(tagtxt);
+      this.save();
     },
     getUserdata(){
       let cookie1 = document.cookie;
@@ -575,6 +627,13 @@ export default {
       }
       #content-tag-save{
           float: right;
+      }
+      #content-tag-newtagtxt{
+        width: 80px;
+        display: none;
+      }
+      #content-tag-newtag-save{
+        display:none;
       }
   }
   #content-editor{
